@@ -25,7 +25,7 @@
 
 **请首先将 apikey.sample.json 复制一份并改名为 apikey.json，并按照以下说明进行配置。**
 
-该文件为 [TT识图](http://www.ttshitu.com) 平台的 API 密钥，在平台注册后，填入用户名与密码即可。由于该 API 需要收费，须在平台充值后方可使用（1 RMB 足够用到天荒地老了）。
+该文件为 [TT识图](http://www.ttshitu.com) 平台的 API 密钥，在平台注册后，填入用户名与密码即可。由于该 API 需要收费，须在平台充值后方可使用（1 RMB 基本够用 识别一次花费0.002 RMB）。
 
 ```json
 {
