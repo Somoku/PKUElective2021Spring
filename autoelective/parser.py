@@ -36,7 +36,7 @@ def get_errInfo(tree):
     assert len(tds) == 1
     td = tds[0]
     strong = td.getchildren()[0]
-    assert strong.tag == 'strong' and strong.text == '出错提示:'
+    assert strong.tag == 'strong' and strong.text in ('出错提示:', '提示:')
     return "".join(td.xpath('./text()')).strip()
 
 def get_tips(tree):
@@ -64,10 +64,7 @@ def get_courses(table):
 def get_courses_with_detail(table):
     header = get_table_header(table)
     trs = get_table_trs(table)
-    try:
-        ixs = tuple(map(header.index, ["课程名","班号","开课单位","限数/已选","补选"]))
-    except ValueError:
-        ixs = tuple(map(header.index, ["课程名","班号","开课单位","限数/已选/候补","补选"]))
+    ixs = tuple(map(header.index, ["课程名","班号","开课单位","限数/已选","补选"]))
     cs = []
     for tr in trs:
         t = tr.xpath('./th | ./td')

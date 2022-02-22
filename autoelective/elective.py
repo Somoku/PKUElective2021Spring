@@ -35,7 +35,6 @@ _hooks_check_tips = get_hooks(
     check_elective_tips,
 )
 
-
 def _get_headers_with_referer(kwargs, referer=ElectiveURL.HelpController):
     headers = kwargs.pop("headers", {})
     headers["Referer"] = referer
@@ -81,11 +80,10 @@ class ElectiveClient(BaseClient):
 
     def sso_login(self, token, **kwargs):
         dummy_cookie = "JSESSIONID=%s!%d" % (
-            ''.join(random.choice(string.digits + string.ascii_letters)
-                    for _ in range(52)),
+            ''.join(random.choice(string.digits + string.ascii_letters) for _ in range(52)),
             random.randint(184960435, 1984960435),
         )
-        headers = kwargs.pop("headers", {})  # no Referer
+        headers = kwargs.pop("headers", {}) # no Referer
         headers["Cookie"] = dummy_cookie  # 必须要指定一个 Cookie 否则报 101 status_code
         r = self._get(
             url=ElectiveURL.SSOLogin,
@@ -102,7 +100,7 @@ class ElectiveClient(BaseClient):
     def sso_login_dual_degree(self, sida, sttp, referer, **kwargs):
         assert len(sida) == 32
         assert sttp in ("bzx", "bfx")
-        headers = kwargs.pop("headers", {})  # no Referer
+        headers = kwargs.pop("headers", {}) # no Referer
         r = self._get(
             url=ElectiveURL.SSOLogin,
             params={
@@ -131,7 +129,7 @@ class ElectiveClient(BaseClient):
             url=ElectiveURL.HelpController,
             hooks=_hooks_check_title,
             **kwargs,
-        )  # 无 Referer
+        ) # 无 Referer
         return r
 
     def get_ShowResults(self, **kwargs):
@@ -150,7 +148,10 @@ class ElectiveClient(BaseClient):
         headers = _get_headers_with_referer(kwargs)
         headers["Cache-Control"] = "max-age=0"
         r = self._get(
-            url=ElectiveURL.SupplyCancel+"?xh="+str(username),
+            url=ElectiveURL.SupplyCancel,
+            params={
+                "xh": username
+                },
             headers=headers,
             hooks=_hooks_check_title,
             **kwargs,
@@ -160,15 +161,14 @@ class ElectiveClient(BaseClient):
     def get_supplement(self, username, page=1, **kwargs):
         """ 补退选（第二页及以后） """
         assert page > 0
-        headers = _get_headers_with_referer(
-            kwargs, ElectiveURL.SupplyCancel+"?xh="+str(username))
+        headers = _get_headers_with_referer(kwargs, ElectiveURL.SupplyCancel)
         headers["Cache-Control"] = "max-age=0"
         r = self._get(
             url=ElectiveURL.Supplement,
             params={
                 "netui_pagesize": "electableListGrid;20",
                 "netui_row": "electableListGrid;%s" % ((page - 1) * 20),
-                "conflictCourse": "",
+                "xh": username
             },
             headers=headers,
             hooks=_hooks_check_title,
@@ -190,7 +190,7 @@ class ElectiveClient(BaseClient):
         )
         return r
 
-    def get_Validate(self, captcha, stuid, **kwargs):
+    def get_Validate(self, username, code, **kwargs):
         """ 验证用户输入的验证码 """
         headers = _get_headers_with_referer(kwargs, ElectiveURL.SupplyCancel)
         headers["Accept"] = "application/json, text/javascript, */*; q=0.01"
@@ -200,8 +200,8 @@ class ElectiveClient(BaseClient):
         r = self._post(
             url=ElectiveURL.Validate,
             data={
-                "xh": stuid,
-                "validCode": captcha,
+                "xh": username,
+                "validCode": code,
             },
             headers=headers,
             hooks=_hooks_check_status_code,

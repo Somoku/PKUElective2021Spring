@@ -35,11 +35,13 @@ class TTShituRecognizer(object):
         self._config = APIConfig()
         
     def recognize(self, raw):
+        _typeid_ = 1003
         encode = TTShituRecognizer._to_b64(raw)
         data = {
             "username": self._config.uname, 
             "password": self._config.pwd,
-            "image": encode
+            "image": encode,
+            "typeid": _typeid_
         }
         try:
             result = json.loads(requests.post(TTShituRecognizer._RECOGNIZER_URL, json=data, timeout=20).text)

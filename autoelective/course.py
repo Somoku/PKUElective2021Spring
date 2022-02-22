@@ -11,7 +11,7 @@ class Course(object):
         self._name = name
         self._class_no = int(class_no) # 确保 01 与 1 为同班号，因为表格软件将 01 视为 1
         self._school = school
-        self._status = status # (maxi, used) OR (maxi, used, waitlist)
+        self._status = status # (maxi, used) 限选 / 已选
         self._href = href     # 选课链接
         self._ident = (self._name, self._class_no, self._school)
 
@@ -53,11 +53,8 @@ class Course(object):
 
     def is_available(self):
         assert self._status is not None
-        if len(self.status) == 2:  # 2nd phase
-            maxi, used = self._status
-            return maxi > used
-        else:  # 1st phase: always available
-            return True
+        maxi, used = self._status
+        return maxi > used
 
     def to_simplified(self):
         return Course(self._name, self._class_no, self._school)
@@ -72,10 +69,9 @@ class Course(object):
 
     def __repr__(self):
         if self._status is not None:
-            return "%s(%s, %s, %s, %s)" % (
+            return "%s(%s, %s, %s, %d / %d)" % (
                 self.__class__.__name__,
-                self._name, self._class_no, self._school,
-                '/'.join(map(str, self._status))
+                self._name, self._class_no, self._school, *self._status,
             )
         else:
             return "%s(%s, %s, %s)" % (
