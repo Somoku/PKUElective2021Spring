@@ -35,7 +35,7 @@ class TTShituRecognizer(object):
         self._config = APIConfig()
         
     def recognize(self, raw):
-        _typeid_ = 1003
+        _typeid_ = 7 #1003
         encode = TTShituRecognizer._to_b64(raw)
         data = {
             "username": self._config.uname, 

@@ -23,6 +23,7 @@ def create_default_parser():
         '--config',
         dest='config_ini',
         metavar="FILE",
+        default='config.ini',
         help='custom config file encoded with utf8',
     )
 
