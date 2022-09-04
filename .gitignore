@@ -6,7 +6,7 @@ __pycache__/
 /config
 /bin
 *.bac
-config*.ini
+config.ini
 apikey.json
 user_agents.user.txt
 .DS_Store
